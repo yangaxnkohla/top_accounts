@@ -9,15 +9,36 @@ import 'package:top_accounts/ui/widgets/accountlist_item.dart';
 
 import 'base_view.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget{
+  @override
+  _HomeView createState() => _HomeView();
+}
+
+class _HomeView extends State<HomeView> {
+  List<Account> accounts;
+  final String id = 'UZyMgwSApiN0b148VDrZSAeWkfb2';
+
+  void _setAccounts(List<Account> accounts){
+    setState(() {
+      this.accounts = accounts;
+    });
+  }
+
+  @override
+  void initState() {
+    setState(() {
+      this.accounts = new List();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    const String id = 'UZyMgwSApiN0b148VDrZSAeWkfb2';
+
     String shortId = id.substring(0, 3) +
         '***' +
         id.substring(id.length - 3, id.length); // shorted id for 'welcome' text
     return BaseView<HomeModel>(
-      onModelReady: (model) => model.getAccounts(id),
+      onModelReady: (model) => model.getAccounts(id).then((value) => _setAccounts(value)),
       builder: (context, model, child) => Scaffold(
         backgroundColor: backgroundColor,
         body: model.state == ViewState.Busy
@@ -26,6 +47,28 @@ class HomeView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   UIHelper.verticalSpaceLarge(),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: RaisedButton.icon(
+                      onPressed: () {
+                        print('Button Clicked.');
+                      },
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(25.0))),
+                      label: Text(
+                        '$shortId',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      icon: Icon(
+                        Icons.person,
+                        color: Colors.white,
+                      ),
+                      textColor: Colors.white,
+                      splashColor: Colors.red,
+                      color: Colors.blueAccent,
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: Text(
@@ -39,7 +82,7 @@ class HomeView extends StatelessWidget {
                         style: subHeaderStyle),
                   ),
                   UIHelper.verticalSpaceSmall(),
-                  Expanded(child: getAccountsUi(model.accounts)),
+                  accounts == null ? Expanded(child: getAccountsUi(model.accounts)) : Expanded(child: getAccountsUi(accounts)),
                 ],
               ),
         floatingActionButton: model.state == ViewState.Busy
@@ -60,11 +103,12 @@ class HomeView extends StatelessWidget {
                               FlatButton(
                                   child: const Text('Yes'),
                                   onPressed: () => {
-                                        model.createAccount(id).whenComplete(() => {
-                                          Navigator.pop(context),
-                                          model.getAccounts(id),
-                                          print('Account created...')
-                                        }),
+                                        model.createAccount(id).whenComplete(
+                                            () => {
+                                                  Navigator.pop(context),
+                                                  model.getAccounts(id),
+                                                  print('Account created...')
+                                                }),
                                       }),
                             ],
                           )),
@@ -77,10 +121,11 @@ class HomeView extends StatelessWidget {
   }
 
   Widget getAccountsUi(List<Account> accounts) => ListView.builder(
-      itemCount: accounts.length,
+      itemCount: accounts. length,
       itemBuilder: (context, index) => AccountListItem(
             account: accounts[index],
             onTap: () {
+              _setAccounts(accounts);
               Navigator.pushNamed(context, 'account',
                   arguments: accounts[index]);
             },

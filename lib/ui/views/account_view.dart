@@ -7,20 +7,44 @@ import 'package:top_accounts/ui/shared/ui_helpers.dart';
 
 import 'base_view.dart';
 
-class AccountView extends StatelessWidget {
+class AccountView extends StatefulWidget {
   final Account account;
 
-  AccountView({this.account});
+  const AccountView ({ Key key, this.account }): super(key: key);
+
+  @override
+  _AccountView createState() => _AccountView();
+}
+
+class _AccountView extends State<AccountView> {
+  int depositAmount;
+  int withdrawalAmount;
+  int balance;
 
   final depositController = TextEditingController();
   final withdrawController = TextEditingController();
 
+  String getFormattedDateTime(String dateTime){
+    List<String> dateArr = dateTime.split("T");
+    return dateArr.elementAt(0) + ", " + dateArr.elementAt(1).substring(0,8);
+  }
+
+  void _setBalanceAmount(int amount){
+    setState(() {
+      this.balance = amount;
+    });
+  }
+
+  @override
+  void initState() {
+     this.balance = widget.account.balance;
+  }
+
   @override
   Widget build(BuildContext context) {
-    int depositAmount;
-    int withdrawalAmount;
+
     return BaseView<AccountModel>(
-      onModelReady: (model) => model.getAccount(account.id),
+      onModelReady: (model) => model.getAccount(widget.account.id),
       builder: (context, model, child) => model.state == ViewState.Busy
           ? Center(child: CircularProgressIndicator())
           : Scaffold(
@@ -54,6 +78,7 @@ class AccountView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Icon(Icons.account_balance_wallet, size: 50.0, color: Colors.white,),
+                      UIHelper.horizontalSpaceSmall(),
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
@@ -73,28 +98,36 @@ class AccountView extends StatelessWidget {
                     ]),
                 UIHelper.verticalSpaceMedium(),
                 Text(
-                  'Balance: ${model.account.balance}',
+                  'Balance: R $balance',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0, color: Colors.white),
                 ),
+                UIHelper.verticalSpaceSmall(),
                 Text(
-                  'Overdraft: ${model.account.overdraft}',
+                  'Overdraft: R ${model.account.overdraft}',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0, color: Colors.white),
                 ),
+                UIHelper.verticalSpaceSmall(),
                 Text(
-                  'Created: ${model.account.created}',
+                  'Created: ${getFormattedDateTime(model.account.created)}',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0, color: Colors.white),
                 ),
+                UIHelper.verticalSpaceSmall(),
                 Text(
-                  'Modified: ${model.account.modified}',
+                  'Modified: ${getFormattedDateTime(model.account.modified)}',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0, color: Colors.white),
                 ),
+                UIHelper.verticalSpaceSmall(),
                 Text(
                   'Active: ${model.account.active}',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0, color: Colors.white),
                 ),
+                UIHelper.verticalSpaceSmall(),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     FlatButton.icon(
+                      minWidth: 175.0,
+                      height: 50.0,
                       label: Text(
                         'Deposit',
                         style: TextStyle(fontSize: 20.0),
@@ -122,11 +155,9 @@ class AccountView extends StatelessWidget {
                                     FlatButton(
                                         child: const Text('Done'),
                                         onPressed: () => {
-                                              depositAmount = int.parse(
-                                                  depositController.text),
-                                              model.depositIntAccount(
-                                                  model.account.id,
-                                                  depositAmount),
+                                              depositAmount = int.parse(depositController.text),
+                                              model.depositIntAccount(model.account.id, depositAmount),
+                                              _setBalanceAmount(balance + depositAmount),
                                               Navigator.pop(context),
                                             }),
                                   ],
@@ -136,6 +167,8 @@ class AccountView extends StatelessWidget {
                     ),
                     UIHelper.horizontalSpaceSmall(),
                     FlatButton.icon(
+                      minWidth: 150.0,
+                      height: 50.0,
                       label: Text(
                         'Withdraw',
                         style: TextStyle(fontSize: 20.0),
@@ -165,6 +198,7 @@ class AccountView extends StatelessWidget {
                                         onPressed: () => {
                                               withdrawalAmount = int.parse(withdrawController.text),
                                               model.withdrawFromAccount(model.account.id, withdrawalAmount),
+                                              _setBalanceAmount(balance - withdrawalAmount),
                                               Navigator.pop(context),
                                             }),
                                   ],

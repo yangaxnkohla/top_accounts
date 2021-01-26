@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:top_accounts/core/models/account.dart';
+import 'package:top_accounts/ui/shared/ui_helpers.dart';
 
 class AccountListItem extends StatelessWidget {
   final Account account;
@@ -34,6 +35,7 @@ class AccountListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Icon(Icons.account_balance_wallet, size: 50.0, color: Colors.white,),
+                  UIHelper.horizontalSpaceSmall(),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -43,7 +45,7 @@ class AccountListItem extends StatelessWidget {
                               fontWeight: FontWeight.w900, fontSize: 24.0, color: Colors.white),
                         ),
                         Text(
-                          'Balance: ' + account.balance.toString(),
+                          'Balance: R ' + account.balance.toString(),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
