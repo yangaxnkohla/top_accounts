@@ -1,4 +1,3 @@
 import 'package:flutter/material.dart';
 
-Color backgroundColor = Color.alphaBlend(Colors.blueGrey, Colors.black12);
-Color commentColor = Color.fromARGB(255, 255, 246, 196);
+Color backgroundColor = Color.alphaBlend(Colors.deepPurpleAccent, Colors.deepPurpleAccent);

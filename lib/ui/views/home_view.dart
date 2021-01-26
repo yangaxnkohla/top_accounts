@@ -33,7 +33,6 @@ class _HomeView extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-
     String shortId = id.substring(0, 3) +
         '***' +
         id.substring(id.length - 3, id.length); // shorted id for 'welcome' text
@@ -41,34 +40,23 @@ class _HomeView extends State<HomeView> {
       onModelReady: (model) => model.getAccounts(id).then((value) => _setAccounts(value)),
       builder: (context, model, child) => Scaffold(
         backgroundColor: backgroundColor,
+        appBar: AppBar(
+          title: Text('Accounts'),
+          backgroundColor: Colors.deepPurple,
+          actions: [
+            // action button
+            IconButton(
+              icon: Icon( Icons.person ),
+              onPressed: () { },
+            ),
+          ],
+        ),
         body: model.state == ViewState.Busy
             ? Center(child: CircularProgressIndicator())
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  UIHelper.verticalSpaceLarge(),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: RaisedButton.icon(
-                      onPressed: () {
-                        print('Button Clicked.');
-                      },
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(25.0))),
-                      label: Text(
-                        '$shortId',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      icon: Icon(
-                        Icons.person,
-                        color: Colors.white,
-                      ),
-                      textColor: Colors.white,
-                      splashColor: Colors.red,
-                      color: Colors.blueAccent,
-                    ),
-                  ),
+                  UIHelper.verticalSpaceSmall(),
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0),
                     child: Text(
@@ -78,7 +66,7 @@ class _HomeView extends State<HomeView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 20.0),
-                    child: Text('Here are all your accounts',
+                    child: Text('Here are all your accounts...',
                         style: subHeaderStyle),
                   ),
                   UIHelper.verticalSpaceSmall(),
@@ -114,7 +102,7 @@ class _HomeView extends State<HomeView> {
                           )),
                 },
                 child: Icon(Icons.add_circle),
-                backgroundColor: Colors.blueAccent,
+                backgroundColor: Colors.purple,
               ),
       ),
     );

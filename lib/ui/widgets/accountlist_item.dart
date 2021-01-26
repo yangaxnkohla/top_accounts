@@ -21,20 +21,24 @@ class AccountListItem extends StatelessWidget {
             gradient: LinearGradient(
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
-                colors: [Colors.blueGrey, Colors.grey]),
+                colors: [Colors.deepPurple, Colors.deepPurple]),
             boxShadow: [
               BoxShadow(
                   blurRadius: 3.0,
                   offset: Offset(0.0, 2.0),
                   color: Color.fromARGB(80, 0, 0, 0))
-            ]),
+            ],
+            border: Border.all(
+              color: Colors.purple,
+              width: 2,
+            )),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Icon(Icons.account_balance_wallet, size: 50.0, color: Colors.white,),
+                  Icon(Icons.account_balance_wallet, size: 60.0, color: Colors.white,),
                   UIHelper.horizontalSpaceSmall(),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,11 +49,11 @@ class AccountListItem extends StatelessWidget {
                               fontWeight: FontWeight.w900, fontSize: 24.0, color: Colors.white),
                         ),
                         Text(
-                          'Balance: R ' + account.balance.toString(),
+                          'Balance: R ${account.balance} 💰',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 16.0, color: Colors.white),
+                              fontWeight: FontWeight.w300, fontSize: 24.0, color: Colors.white),
                         )
                       ]),
                 ]),
